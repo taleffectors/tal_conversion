@@ -1,0 +1,209 @@
+<html>
+<title>TALE Sequence Generator</title>
+<head>
+	<a href="http://taleffectors.com/?page_id=108"><img src="http://taleffectors.com/wp-content/uploads/2011/08/tools.jpg" width="400" height="50"/></a>
+	<style type="text/css">
+		body { font-size: 80%; font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif; }
+		ul#tabs { list-style-type: none; margin: 30px 0 0 0; padding: 0 0 0.3em 0; }
+		ul#tabs li { display: inline; }
+		ul#tabs li a { color: #42454a; background-color: #dedbde; border: 1px solid #c9c3ba; border-bottom: none; padding: 0.3em; text-decoration: none; }
+		ul#tabs li a:hover { background-color: #f1f0ee; }
+		ul#tabs li a.selected { color: #000; background-color: #f1f0ee; font-weight: bold; padding: 0.7em 0.3em 0.38em 0.3em; }
+		div.tabContent { border: 1px solid #c9c3ba; padding: 0.5em; background-color: #f1f0ee; }
+		div.tabContent.hide { display: none; }
+	</style>
+	<script type ="text/javascript">
+		test = "align"
+		var tabLinks = new Array();
+    	var contentDivs = new Array();
+
+		function init() {
+
+	      // Grab the tab links and content divs from the page
+	      var tabListItems = document.getElementById('tabs').childNodes;
+	      for ( var i = 0; i < tabListItems.length; i++ ) {
+	        if ( tabListItems[i].nodeName == "LI" ) {
+	          var tabLink = getFirstChildWithTagName( tabListItems[i], 'A' );
+	          var id = getHash( tabLink.getAttribute('href') );
+	          tabLinks[id] = tabLink;
+	          contentDivs[id] = document.getElementById( id );
+	        }
+	      }
+
+	      // Assign onclick events to the tab links, and
+	      // highlight the first tab
+	      var i = 0;	
+	      // var n = {{align}};
+
+	      for ( var id in tabLinks ) {
+	        tabLinks[id].onclick = showTab;
+	        tabLinks[id].onfocus = function() { this.blur() };
+	        if ( i == 0 ) tabLinks[id].className = 'selected';
+	        i++;
+	      }
+
+	      // Hide all content divs except the first
+	      var i = 0;
+	      // var n = {{align}};
+
+	      for ( var id in contentDivs ) {
+	        if ( i != 0 ) contentDivs[id].className = 'tabContent hide';
+	        i++;
+	      }
+	    }
+
+
+		// function advanceTab() {
+	 //      var selectedId = 'align';
+
+	 //      // Highlight the selected tab, and dim all others.
+	 //      // Also show the selected content div, and hide all others.
+	 //      for ( var id in contentDivs ) {
+	 //        if ( id == selectedId ) {
+	 //          tabLinks[id].className = 'selected';
+	 //          contentDivs[id].className = 'tabContent';
+	 //        } else {
+	 //          tabLinks[id].className = '';
+	 //          contentDivs[id].className = 'tabContent hide';
+	 //        }
+	 //      }
+
+
+		function showTab() {
+	      var selectedId = getHash( this.getAttribute('href') );
+
+	      // Highlight the selected tab, and dim all others.
+	      // Also show the selected content div, and hide all others.
+	      for ( var id in contentDivs ) {
+	        if ( id == selectedId ) {
+	          tabLinks[id].className = 'selected';
+	          contentDivs[id].className = 'tabContent';
+	        } else {
+	          tabLinks[id].className = '';
+	          contentDivs[id].className = 'tabContent hide';
+	        }
+	      }
+
+	      // Stop the browser following the link
+	      return false;
+	    }
+
+	    function getFirstChildWithTagName( element, tagName ) {
+	      for ( var i = 0; i < element.childNodes.length; i++ ) {
+	        if ( element.childNodes[i].nodeName == tagName ) return element.childNodes[i];
+	      }
+	    }
+
+	    function getHash( url ) {
+	      var hashPos = url.lastIndexOf ( '#' );
+	      return url.substring( hashPos + 1 );
+	    }
+	</script>
+	<script type = "text/javascript">
+		
+			function advanceTab() {
+
+		      var i = 0;	
+	      // var n = {{align}};
+
+		      for ( var id in tabLinks ) {
+		        tabLinks[id].onclick = showTab;
+		        tabLinks[id].onfocus = function() { this.blur() };
+		        if ( i == 1 ) tabLinks[id].className = 'selected';
+		        i++;
+		      }
+
+		      // Hide all content divs except the first
+		      var i = 0;
+		      // var n = {{align}};
+
+		      for ( var id in contentDivs ) {
+		        if ( i != 1 ) contentDivs[id].className = 'tabContent hide';
+		        i++;
+		      }
+		  }
+	</script>
+</head>
+<body onload="init()">
+
+
+    <ul id="tabs"> 
+      <li><a href="#assemble">TALE Sequence Generator</a></li> 
+<!-- 	  <li><a href="#align">Compare Sequencing Results</a></li> -->
+ 	  <li><a href="#help">Further Information</a></li>
+    </ul> 
+ 
+    <div class="tabContent" id="assemble"> 
+      <h2>TALE Sequence Generator</h2> 
+      	This program provides a tool for generating TALE sequences based on a custom target site. Sequences can be generated as the open reading frame containing the TALE custom repeat region and functional domains or as a fully annotated vector map in Genbank format.
+      	<ul style='font-family:verdana'>
+      		<li>Target sites typically begin with a thymine and consist of 2-26 DNA bases, e.g. "TAGAGACTAGAC"</li>
+      		<li>Binding domains can be inserted into a TALE-TF (VP64 activation domain) or TALEN (Fok1 nuclease) backbone.</li>
+      		<li>Generated ORF sequences can be used as the reference sequence for sequence alignment to confirm correct construction of custom TALEs.</li></ul>
+      	{% if errors %}
+        <ul style="font-family:verdana; color:red">
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    	{% endif %}
+      <div> 
+      <form action = "/tools/convert/" method = "post" style="font-family:verdana">
+      {% csrf_token %}
+      Enter target sequence:
+		<input type = "text" name = "sequence" size ="35" value="{{seq_in}}"> <br /><br />
+      		Type:
+		<input type ="radio" name="backbone" value="TALE" checked="yes"/> TALE-TF
+		<input type ="radio" name="backbone" value="TALEN"/> TALEN<br />
+<!-- 		A Monomer: <input type="radio" name="A" value ="NI" checked = "yes"/> NI<br /><br />
+		T Monomer: <input type="radio" name="T" value ="NG" checked = "yes"/> NG<br /><br />
+		C Monomer: <input type="radio" name="C" value ="HD" checked = "yes"/> HD<br /><br /> -->
+		G Monomer: <input type="radio" name="G" value ="NN" checked = "yes"/> NN <input type="radio" name="G" value="NH"/> NH <br /><br />
+<!-- 		 <br /><br /> -->
+		 <input type = "submit" name = "assemble" value ="Generate TALE ORF"  /> <input type = "submit" name ="genbank" value="Generate Genbank Vector Map" />
+		<p style="font-family:verdana">Assembled TALE Sequence:<br />
+		<textarea rows = "25" cols="100" name="reference" readonly="readonly">{{seq}}</textarea></p>
+<!-- 		<input type = "submit" name = "align" value = "Align Sequences >>" /> -->
+      </div> 
+      </form>
+    </div> 
+<!-- 
+    <div class="tabContent" id="align"> 
+      <h2>Align Sequencing Reults</h2> 
+      <div>
+   		<p>This program provides sequence alignment for sequencing reads from fully assembled custom TALEs.
+   		<ul>
+   		<li>The TALE ORF should be used as a reference sequence. This can be assembled using the TALE Sequence generator program.</li>
+   		<li>Multiple sequencing results can be entered for comparison. Each sequence should be entered in FASTA format, with description lines used to denote different sequences.</li></ul></p> 
+		<form action = "/tools/align/" method = "post" style = "font-family:verdana">
+		{% csrf_token %}
+		{% if align_errors %}
+        <ul style="font-family:verdana; color:red">
+            {% for error in align_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    	{% endif %}
+			Enter reference sequence:<br />
+			<textarea name = "reference" rows= "25" cols ="100">{{ref}}</textarea>
+			<p>
+			Enter sequences in FASTA format: <br />
+			<textarea name ="sequences" rows = "25" cols="100">{{seqs}}</textarea><br /> <br />
+			<input type = "submit" value = "Align" />
+		</form>
+      </div> 
+    </div> -->
+
+    <div class="tabContent" id="help"> 
+		<h2>Further Information</h2>
+		<p>These tools are designed to aid in the analysis of customized TALE transcription factors and TALE nucleases. All tools are designed to supplement the TALE construction protocol described in Sanjana et al., Nature Protocols 2011. For further information on the TALE assmebly protocol, as well as information on monomer and backbone sequences, please consult the paper. All plasmids needed for construction can be obtained through <a href="http://www.taleffectors.com">www.taleffectors.com</a> or <a href="www.addgene.org/TALE_Toolbox">Addgene.</a></p>
+
+		<p>The sequence generator tool is designed to assemble the reference sequence for a customized TALE. The modular nature of TALE construction results in highly repetitive sequence bound together by variable linker regions. Reference sequences can be generated either as the open reading frame of the TALE construct, with results displayed in the window, or as a download of a fully annotated Genbank map of the vector.</p>
+ 
+<!-- 		<p>Finally, a sequence alignment tool is provided to allow comparison of sequencing results from assmebled TALEs with the generated reference sequence. The ORF sequence generated by the sequence generator tool can be used as a reference to align multiple sequencing reads, allowing assessment of the success of TALE assembly.</p> -->
+
+		<p>For further questions or to report problems, please contact <a href="mailto:taleffectors@mit.edu">taleffectors@mit.edu</a>.</p> 
+    </div>
+<br />&copy; 2011 M. Cunniff. Please email <a href="mailto:taleffectors@mit.edu">taleffectors@mit.edu</a> with any questions or problems.
+</body>
+</html>

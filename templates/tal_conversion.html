@@ -1,0 +1,28 @@
+<html>
+<head>
+	<title>TAL Sequence Conversion</title>
+</head>
+<body>
+	<h1 style="font-family:verdana">TALE Sequence Assembly</h1>
+	{% if errors %}
+        <ul style="font-family:verdana">
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+	<form action = "/convert/" method = "get" style="font-family:verdana">
+		<style="font-family:verdana"> Enter target sequence: 
+		<input type = "text" name = "sequence" size ="35"/> <br /><br />
+		A Monomer: <input type="radio" name="A" value ="NI" checked = "yes"/> NI<br /><br />
+		T Monomer: <input type="radio" name="T" value ="NG" checked = "yes"/> NG<br /><br />
+		C Monomer: <input type="radio" name="C" value ="HD" checked = "yes"/> HD<br /><br />
+		G Monomer: <input type="radio" name="G" value ="NN" checked = "yes"/> NN
+		<input type="radio" name="G" value ="NK"/> NK
+		<input type="radio" name="G" value ="HN"/> HN <br /><br />
+		<input type = "submit" value ="Assemble" />
+	</form>
+	<p style="font-family:verdana">Assembled TAL Sequence:<br />
+	<textarea rows = "20" cols="100">{{seq}}</textarea></p>
+</body>
+</html>
